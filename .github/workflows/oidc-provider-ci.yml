@@ -1,0 +1,27 @@
+name: oidc-provider
+
+on:
+  push:
+    paths:
+      - 'oidc-provider/**'
+      - '.github/workflows/oidc-provider-ci.yml'
+  pull_request:
+    paths:
+      - 'oidc-provider/**'
+      - '.github/workflows/oidc-provider-ci.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore
+        run: dotnet restore oidc-provider/oidc-provider.sln
+      - name: Build
+        run: dotnet build oidc-provider/oidc-provider.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test oidc-provider/oidc-provider.sln --configuration Release --no-build
